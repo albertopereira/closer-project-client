@@ -33,17 +33,21 @@ export default new Vuex.Store({
     selectedNode: state => {
       return state.selectedNode
     },
-    totalValueForYear: state => {
-      return statistics.totalValueForYear(state, state.route.params.year)
+    totalValueForYear: (state, getters) => {
+      return statistics.totalValueForYear(state, getters.year)
     },
-    growth: state => {
-      return statistics.growth(state, state.route.params.year)
+    growth: (state, getters) => {
+      return statistics.growth(state, getters.year)
     },
     averagePerYear: state => {
       return statistics.averagePerYear(state)
     },
     year: state => {
-      return state.route.params.year
+      if (state.route.params.year === undefined) {
+        return state.jsonData.values[0].year
+      } else {
+        return state.route.params.year
+      }
     },
     allYears: state => {
       if (state.jsonData) {

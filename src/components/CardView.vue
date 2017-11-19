@@ -20,8 +20,11 @@
       </div>
 
       <div class="row single-card separator">
-        <div class="col-12">
-          <div class="card-descr">{{ jsonData.key }} <br/> <a :href="jsonData.src" target="_blank">{{ jsonData.src }}</a></div>
+        <div class="col-6">
+          <div class="card-descr">{{ jsonData.key }}</div>
+        </div>
+        <div class="col-6">
+          <div class="card-descr"><a :href="jsonData.src" target="_blank">{{ jsonData.src }}</a></div>
         </div>
       </div>
 
@@ -46,11 +49,7 @@ export default {
       'growth',
       'averagePerYear',
       'year'
-    ]
-    )
-  },
-  methods: {
-
+    ])
   }
 }
 </script>
@@ -78,19 +77,19 @@ export default {
 }
 
 .single-card{
-  margin:10px 0px;
+  margin:15px 0px 0px 15px;
 }
 
 .card-title{
-  font-size: 1.8em;
+  font-size: 1.5em;
   font-family: 'Georgia';
   margin: 0px;
   padding: 0px;
-  line-height: 1.2;
+  line-height: 1;
 }
 
 .card-descr{
-  font-size: 1.2em;
+  font-size: 1em;
   color:#888888;
 }
 

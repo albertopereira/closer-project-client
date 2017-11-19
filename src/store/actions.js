@@ -1,8 +1,8 @@
 import axios from 'axios'
 
-export const getData = function (context) {
+export const getData = function (context, args) {
   return new Promise((resolve, reject) => {
-    axios.get('http://closer.dev/api/view/1')
+    axios.get('http://closer-project.com/api/view/' + args.budget_id + '/' + args.view_id)
       .then(response => {
         context.commit('SET_DATA', response.data)
         resolve(response)

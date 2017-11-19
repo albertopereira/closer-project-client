@@ -24,14 +24,14 @@
         <chart-view></chart-view>
       </div>
       <div class="col-6 component-wrapper">
-        <tabular-view></tabular-view>
+        <treemap-view></treemap-view>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import tabularView from './TabularView'
+import treemapView from './TreemapView'
 import chartView from './ChartView'
 import cardView from './CardView'
 import legendView from './LegendView'
@@ -40,7 +40,7 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'GTView',
   components: {
-    tabularView,
+    treemapView,
     chartView,
     cardView,
     legendView

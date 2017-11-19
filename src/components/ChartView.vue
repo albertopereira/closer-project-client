@@ -1,54 +1,59 @@
 <template>
     <div class="chart" ref="chart">
-      <svg :height="height" :width="width + 20" v-if="selectedNode">
-        <g>
-          <g class="multigrid" transform="translate(0,230)">
-            <g class="tick major" style="opacity: 1;" v-for="tick in xTicks" :transform="xTicksTransform(tick)">
-              <line x2="0" :y2="height * -1"></line>
-              <text dy=".71em" style="text-anchor: middle;" x="0" y="3"></text>
+      <div v-if="selectedNode && selectedNode.data">
+        <div class="chart-title">
+          {{ selectedNode.data.descr }} (evolução)
+        </div> 
+        <svg :height="height" :width="width + 20" v-if="selectedNode">
+          <g>
+            <g class="multigrid" :transform="'translate(0, ' + (height - 30) + ')'">
+              <g class="tick major" style="opacity: 1;" v-for="tick in xTicks" :transform="xTicksTransform(tick)">
+                <line x2="0" :y2="height * -1"></line>
+                <text dy=".71em" style="text-anchor: middle;" x="0" y="3"></text>
+              </g>
             </g>
-            <path class="domain" d="M50,0V0H809V0"></path>
-          </g>
-          <g class="multigrid" transform="translate(50,0)">
-            <g class="tick major" style="opacity: 1;" v-for="tick in yTicks" :transform="yTicksTransform(tick)">
-              <line :x2="width - 50" y2="0"></line>
-              <text dy=".32em" style="text-anchor: end;" x="-3" y="0"></text>
+            <g class="multigrid" :transform="'translate(' + xmargin + ', 0)'">
+              <g class="tick major" style="opacity: 1;" v-for="tick in yTicks" :transform="yTicksTransform(tick)">
+                <line :x2="width - 50" y2="0"></line>
+                <text dy=".32em" style="text-anchor: end;" x="-3" y="0"></text>
+              </g>
             </g>
           </g>
-        </g>
 
-        <g class="layers">
-          <svg>
-            <g class="browser">
-              <path class="multiarea" :d="multiareaPath" style="fill: rgb(31, 119, 180);"></path>
-              <path class="multiline" :d="linePath" style="stroke: rgb(31, 119, 180);"></path>
+          <g class="layers">
+            <svg>
+              <g class="browser">
+                <path class="multiarea" :d="multiareaPath" style="fill: rgb(31, 119, 180);"></path>
+                <path class="multiline" :d="linePath" style="stroke: rgb(31, 119, 180);"></path>
+              </g>
+            </svg>
+          </g>
+          
+          <g class="axis xAxis" :transform="'translate(0, ' + (height - 30) + ')'">
+            <g class="tick major thisYear" style="opacity: 1;" v-for="year in allYears" :transform="xAxisTransform(year)">
+              <line x2="0" y2="0"></line>
+              <text dy=".71em" style="text-anchor: middle;" x="0" y="10" class="label">
+                {{ year }}
+              </text>
             </g>
-          </svg>
-        </g>
-        
-        <g class="axis xAxis" transform="translate(0,230)">
-          <g class="tick major thisYear" style="opacity: 1;" v-for="year in allYears" :transform="xAxisTransform(year)">
-            <line x2="0" y2="0"></line>
-            <text dy=".71em" style="text-anchor: middle;" x="0" y="10">
-              {{ year }}
-            </text>
           </g>
-        </g>
 
-        <g class="axis" transform="translate( 50,0)">
-          <g class="tick major" style="opacity: 1;" v-for="value in selectedNodeValues" :transform="yAxisTransform(value)">
-            <line x2="0" y2="0"></line>
-            <text dy=".32em" style="text-anchor: end;" x="-5" y="0">
-              {{ formatCurrency(value) }}
-            </text>
+          <g class="axis"  :transform="'translate(' + xmargin + ', 0)'">
+            <g class="tick major" style="opacity: 1;" v-for="value in selectedNodeValues" :transform="yAxisTransform(value)">
+              <line x2="0" y2="0"></line>
+              <text dy=".32em" style="text-anchor: end;" x="-5" y="0" class="label">
+                {{ formatCurrency(value) }}
+              </text>
+            </g>
           </g>
-        </g>
-      </svg>
+        </svg>
+      </div>
     </div>
 </template>
 
 <script>
 import * as d3 from 'd3'
+import * as cbspline from 'cardinal-spline-js'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -56,34 +61,22 @@ export default {
   data () {
     return {
       rootNode: {},
-      margin: {
-        top: 20,
-        right: 0,
-        bottom: 0,
-        left: 0
-      },
-      width: 700,
-      height: 260,
-      formatNumber: d3.format(',d'),
-      selected: null,
-      color: {},
+      width: 0,
+      height: 230,
       xmargin: 50,
       ymargin: 30,
-      xTicks: 6,
-      yTicks: 4
+      xTicks: 13,
+      yTicks: 7
     }
   },
   watch: {
-    year () {
-
-    }
   },
   mounted () {
     var that = this
     that.color = d3.scaleOrdinal(d3.schemeCategory20)
 
     this.$nextTick(() => {
-
+      this.width = this.$refs.chart.clientWidth
     })
   },
   computed: {
@@ -113,11 +106,11 @@ export default {
       }
     },
     xTickSize () {
-      return ((this.xscale.range()[1] - 1) / this.xTicks)
+      return ((this.xscale.range()[1]) / this.xTicks)
     },
     yTickSize () {
       if (this.yscale) {
-        return ((this.yscale.range()[0] + 25 + this.xmargin) / this.yTicks)
+        return ((this.yscale.range()[0]) / this.yTicks)
       }
     },
     indexOfYear () {
@@ -125,31 +118,48 @@ export default {
     },
     linePath () {
       if (this.allYears && this.selectedNodeValues) {
+        let points = []
+        for (let i = 0; i < this.allYears.length; i++) {
+          points.push(this.xscale(this.allYears[i]))
+          points.push(this.yscale(this.selectedNodeValues[i]))
+        }
+
+        points = cbspline.getCurvePoints(points)
+
+        let lineTo = ''
+
+        for (let i = 0; i < points.length; i++) {
+          lineTo += points[i] + ', '
+        }
         return `
-          M 
-          ${this.xscale(this.allYears[0])}, ${this.yscale(this.selectedNodeValues[0])} 
-          C 
-          ${this.xscale(this.allYears[0])}, ${this.yscale(this.selectedNodeValues[0])},
-          ${this.xscale(this.allYears[1]) - 100}, ${this.yscale(this.selectedNodeValues[1]) - 10},
-          ${this.xscale(this.allYears[1])}, ${this.yscale(this.selectedNodeValues[1])}
-          S
-          ${this.xscale(this.allYears[2])}, ${this.yscale(this.selectedNodeValues[2]) - 10},
-          ${this.xscale(this.allYears[2])}, ${this.yscale(this.selectedNodeValues[2])}
+          M
+          ${this.xscale(this.allYears[0])}, ${this.yscale(this.selectedNodeValues[0])}
+          L
+          ${lineTo}
         `
       }
     },
     multiareaPath () {
       if (this.allYears && this.selectedNodeValues) {
+        let points = []
+        for (let i = 0; i < this.allYears.length; i++) {
+          points.push(this.xscale(this.allYears[i]))
+          points.push(this.yscale(this.selectedNodeValues[i]))
+        }
+
+        points = cbspline.getCurvePoints(points)
+
+        let lineTo = ''
+
+        for (let i = 0; i < points.length; i++) {
+          lineTo += points[i] + ', '
+        }
+
         return `
           M
-          ${this.xscale(this.allYears[0])}, ${this.yscale(this.selectedNodeValues[0])} 
-          C
-          ${this.xscale(this.allYears[0])}, ${this.yscale(this.selectedNodeValues[0])},
-          ${this.xscale(this.allYears[1])}, ${this.yscale(this.selectedNodeValues[1])},
-          ${this.xscale(this.allYears[1])}, ${this.yscale(this.selectedNodeValues[1])}
-          S
-          ${this.xscale(this.allYears[2])}, ${this.yscale(this.selectedNodeValues[2])},
-          ${this.xscale(this.allYears[2])}, ${this.yscale(this.selectedNodeValues[2])}
+          ${this.xscale(this.allYears[0])}, ${this.yscale(this.selectedNodeValues[0])}
+          L
+          ${lineTo}
           L
           ${this.width},${this.height - this.ymargin}
           L
@@ -222,5 +232,16 @@ export default {
 
 .overflows {
     fill: #f9f9f9;
+}
+
+.chart-title{
+  margin-top: 20px;
+  margin-bottom: 20px;
+  font-size: 1.3em;
+  text-align: center;
+}
+
+.label{
+  font-size: .8rem;
 }
 </style>

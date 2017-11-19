@@ -44,7 +44,7 @@ export default {
   }
 
   .legend-wrap{
-    line-height: 2em;
+    line-height: 1.4em;
   }
 
   .legend-label{
@@ -53,11 +53,11 @@ export default {
     border-radius: 8px;
     float:left;
     margin-right: 10px;
-    margin-top: 7px;
+    margin-top: 3px;
   }
 
   .legend-text{
-    font-size: 1.1em;
+    font-size: .9em;
   }
 
 </style>
