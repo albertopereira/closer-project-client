@@ -4,11 +4,7 @@ Frontend client for [Closer Project](https://github.com/albertopereira/closer-pr
 
 ## Table of contents
 
-- [Architecture](https://github.com/albertopereira/closerproject/blob/master/docs/architecture.md)
-- [Client](https://github.com/albertopereira/closerproject/blob/master/docs/client.md)
-- [API](https://github.com/albertopereira/closerproject/blob/master/docs/api.md)
-- [Quality Assurance](https://github.com/albertopereira/closerproject/blob/master/docs/quality_assurance.md)
-- [User Manual](https://github.com/albertopereira/closerproject/blob/master/docs/user_manual.md)
+[[Summary|#Summary]]
 
 ## Summary
 
