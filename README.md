@@ -4,7 +4,19 @@ Frontend client for [Closer Project](https://github.com/albertopereira/closer-pr
 
 ## Table of contents
 
-[[Summary|#Summary]]
+- [Summary](#summary)
+- [Technologies](#technologies)
+- [External libraries and components](#external-libraries-and-components)
+- [Structure](#structure)
+- [Sequence Structure](#sequence-structure)
+- [Components](#components)
+- [API](#api)
+- [Store](#store)
+- [Build Setup](#build-setup)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+- [Reporting Issues](#reporting-issues)
+- [Security Vulnerabilities](#security-vulnerabilities)
 
 ## Summary
 
@@ -93,7 +105,7 @@ Data in the client is centralized in a collection of globally accessible objects
 | view | Array | Contains the selected views |
 | children  | Array[Budget] | The children of the given budget node |
 
-## Value
+### Value
 
 | Field | Datatype | Description |
 |:------|:---------|:------------|
