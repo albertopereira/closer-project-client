@@ -13,6 +13,9 @@
           <li class="nav-menu" v-if="hasView('t')">
             <a href="#" @click.prevent="changeView('t')" v-bind:class="{ active: activePage === 't' }"><i class="fa fa-th-list" aria-hidden="true"></i>Tabela</a>
           </li>
+          <li class="nav-menu" v-if="hasView('b')">
+            <a href="#" @click.prevent="changeView('b')" v-bind:class="{ active: activePage === 'b' }"><i class="fa fa-th-list" aria-hidden="true"></i>Bubble Tree</a>
+          </li>
           <li class="nav-menu" v-if="hasView('m')">
             <a href="#" @click.prevent="changeView('m')" v-bind:class="{ active: activePage === 'm' }"><i class="fa fa-globe" aria-hidden="true"></i>Heatmap</a>
           </li>

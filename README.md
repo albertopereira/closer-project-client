@@ -78,6 +78,12 @@ __Tabular__
 
 The Tabular component shows a tabular visualization for the data, resorting to a recursive structure to nest the values. To show the growth through the years of each value row, it uses the [cardinal-spline-js](https://github.com/epistemex/cardinal-spline-js) to create an interpolated smooth curve through each point pair in the data, preventing the need for calculating control points for a Bezier Curve.
 
+__Bubble Tree__
+
+![Bubble](http://closer-project.com/docs/images/bubble.png)
+
+The Bubble Tree component shows a hierarchical, and circular, visualization of the data, allowing for zooms of each node at any given level. 
+
 __Heatmap__
 
 ![Heatmap](http://closer-project.com/docs/images/heatmap.png)

@@ -2,6 +2,7 @@
   <div id="main">
     <heatmap-view v-if="currentView === 'm'"></heatmap-view>
     <gt-view v-if="currentView === 'gt'"></gt-view>
+    <bubble-view v-if="currentView === 'b'"></bubble-view>
     <tabular-view v-if="currentView === 't'"></tabular-view>
   </div>
 </template>
@@ -10,6 +11,7 @@
 import gtView from './gtView'
 import tabularView from './TabularView'
 import heatmapView from './HeatmapView'
+import bubbleView from './BubbleView'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -17,6 +19,7 @@ export default {
   components: {
     gtView,
     tabularView,
+    bubbleView,
     heatmapView
   },
   data () {
@@ -34,6 +37,8 @@ export default {
           return 'gt'
         } else if (this.jsonData.view.indexOf('t') > -1) {
           return 't'
+        } else if (this.jsonData.view.indexOf('b') > -1) {
+          return 'b'
         } else if (this.jsonData.view.indexOf('h') > -1) {
           return 'm'
         }
